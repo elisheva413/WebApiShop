@@ -10,7 +10,7 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        string _filePath = "..\\users.txt";
+        private readonly string _filePath = Path.Combine(Directory.GetCurrentDirectory(), "users.txt");
      
         // GET: api/<UsersController>
         [HttpGet]
@@ -33,7 +33,7 @@ namespace WebApiShop.Controllers
                         return user;
                 }
             }
-            return new User();
+            return NotFound();
         }
 
 
@@ -49,8 +49,8 @@ namespace WebApiShop.Controllers
             return CreatedAtAction(nameof(Get), new { newUser.Id }, newUser);
         }
         // POST api/<UsersController>
-        [HttpPost("{login}")]
-        public ActionResult<ExistUser> LogIn([FromBody] ExistUser existUser)
+        [HttpPost("login")]
+        public ActionResult<User> LogIn([FromBody] ExistUser existUser)
         {
             using (StreamReader reader = System.IO.File.OpenText(_filePath))
             {
@@ -59,15 +59,15 @@ namespace WebApiShop.Controllers
                 {
                     User userFromFile = JsonSerializer.Deserialize<User>(currentUserInFile);
                     if (userFromFile != null && userFromFile.UserName == existUser.UserName && userFromFile.Password == existUser.Password)
-                        return CreatedAtAction(nameof(Get), new { id = userFromFile.Id }, userFromFile);
+                        return Ok(userFromFile);
                 }
             }
-            return NotFound();
+            return Unauthorized();
         }
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] User updateUser)
+        public ActionResult Put(int id, [FromBody] User updateUser)
         {
             string textToReplace = string.Empty;
             using (StreamReader reader = System.IO.File.OpenText(_filePath))
@@ -86,14 +86,9 @@ namespace WebApiShop.Controllers
                 string text = System.IO.File.ReadAllText(_filePath);
                 text = text.Replace(textToReplace, JsonSerializer.Serialize(updateUser));
                 System.IO.File.WriteAllText(_filePath, text);
+                return NoContent();
             }
-        }
-        
-
-        // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return NotFound();
         }
     }
 }
