@@ -8,7 +8,6 @@ namespace Service
         Task<User> GetUserById(int id);
         Task<List<User>> GetUsers();
         Task<User> LogIn(User user);
-        void UpdateUser(int id, User updateUser);
         Task UpdateUser(int id, Entities.User updateUser);
     }
 }

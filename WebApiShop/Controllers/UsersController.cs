@@ -59,7 +59,7 @@ namespace WebApiShop.Controllers
 
             var user = await _userService.LogIn(existUser);
             if (user == null)
-                return NotFound("Invalid credentials.");
+                return Unauthorized("Invalid credentials.");
             return Ok(user);
         }
 
