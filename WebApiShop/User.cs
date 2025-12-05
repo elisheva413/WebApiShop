@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebApiShop
+namespace Entities
+
 {
     public class User
     {
@@ -14,13 +15,5 @@ namespace WebApiShop
         [StringLength(8, ErrorMessage = "password Can be between 4 till 8 chars", MinimumLength = 4), Required]
         public string Password { get; set; }
     }
-    public class ExistUser
-    {
-        [EmailAddress, Required]
-        public string UserName { get; set; }
 
-        [StringLength(8, ErrorMessage = "password Can be between 4 till 8 chars", MinimumLength = 4), Required]
-        public string Password { get; set; }
-
-    }
 }

@@ -1,76 +1,92 @@
 ﻿
-const extrctDataFromInput = () => {
+const extrctDataFromInputUser = () => {
     const userName = document.querySelector("#userName").value
     const firstName = document.querySelector("#firstName").value
     const lastName = document.querySelector("#lastName").value
     const password = document.querySelector("#password").value
-    return { userName, firstName, lastName, password }
-}
-
-const createObjUser = (upDateValues) => {
     const id = 1
-    const userName = upDateValues.userName
-    const firstName = upDateValues.firstName
-    const lastName = upDateValues.lastName
-    const password = upDateValues.password
     return { id, userName, firstName, lastName, password }
 }
 
-const updateStorage = (fullUser) => {
-    sessionStorage.setItem("userName", fullUser.userName)
-    sessionStorage.setItem("firstName", fullUser.firstName)
-    sessionStorage.setItem("lastName", fullUser.lastName)
-    sessionStorage.setItem("password", fullUser.password)
-    sessionStorage.setItem("id",fullUser.id)
+const extrctDataFromInputLogIn = () => {
+    const userName = document.querySelector("#username").value
+    const password = document.querySelector("#pasword").value
+    const id = 1, firstName = "aaa", lastName = "aaa"
+    return { id, userName, firstName, lastName, password }
 }
 
-async function postResponse() {
-    const dateValues = extrctDataFromInput()
-    const newUser = createObjUser(dateValues)
+async function registIn() {
+    const newUser = extrctDataFromInputUser()
     try {
         const response = await fetch(
-            "api/Users",
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newUser)
-            }
+            "https://localhost:44362/api/Users", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUser)
+        }
         )
         if (!response.ok) {
             throw new Error(`HTTP error! status ${response.status}`);
         }
         else {
             alert("המשתמש נרשם בהצלחה")
+            const newUserFull = await response.json()
         }
     }
     catch (e) { alert(e) }
 }
 
 async function logIn() {
-    const userName = document.querySelector("#username").value
-    const password = document.querySelector("#pasword").value
-    const existUser = { userName, password }
+    const existUser = extrctDataFromInputLogIn()
     try {
         const response = await fetch(
-           
-            "api/Users/login",
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(existUser)
-            }
+            "https://localhost:44362/api/Users/login", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(existUser)
+        }
         )
         if (!response.ok) {
-            alert("שם משתמש או סיסמא שגויים")
             throw new Error(`HTTP error! status ${response.status}`);
         }
         else {
             const fullUser = await response.json()
-            updateStorage(fullUser)
+            sessionStorage.setItem("currentUser", JSON.stringify(fullUser))
             window.location.href = "page2.html"
         }
     }
-    catch (e) { }
+    catch (e) { alert(e) }
+}
+async function checkPassword() {
+    const bar = document.querySelector(".bar")
+    const Password = document.querySelector("#password").value
+    const userPassword = { Password }
+    try {
+        const response = await fetch(
+            "https://localhost:44362/api/UsersPassword", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userPassword)
+        }
+        )
+        if (!response.ok) {
+            throw new Error(`HTTP error! status ${response.status}`)
+        }
+        else {
+            const a = await response.json()
+            bar.innerHTML = ""
+            bar.style.display = "flex"
+            for (let i = 0; i < a; i++) {
+                const step = document.createElement("div")
+                step.className = "stage"
+                bar.appendChild(step)
+            }
+        }
+    }
+    catch (e) {
+        bar.innerHTML = ""
+        alert(e)
+    }
 }
 
 

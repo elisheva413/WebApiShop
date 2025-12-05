@@ -1,0 +1,14 @@
+﻿using Repositeries.Models;
+
+namespace Repositeries
+{
+    public interface IUserRipository
+    {
+        Task<User> AddUser(User user);
+        Task<User> GetUserById(int id);
+        Task<List<User>> GetUsers();
+        Task<User> LogIn(User user);
+        void UpdateUser(int id, User updateUser);
+    }
+}
+

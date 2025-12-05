@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
+using Entities;
+using System.Collections.Generic;
+using Repositeries;
+using Service;
 
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApiShop.Controllers
 {
@@ -10,90 +12,77 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        string _filePath = "..\\users.txt";
-     
-        // GET: api/<UsersController>
+        private readonly IUserService _userService;
+        private readonly IUserPasswordService _userPasswordService;
+
+        public UsersController(IUserService userService, IUserPasswordService userPasswordService)
+        {
+            _userService = userService;
+            _userPasswordService = userPasswordService;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<User>>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var users = await _userService.GetUsers();
+            if (users == null || !users.Any())
+                return NoContent();
+            return Ok(users);
         }
 
-        // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public ActionResult<User> GetId(int id)
+        public async Task<ActionResult<User>> GetById(int id)
         {
-            using (StreamReader reader = System.IO.File.OpenText(_filePath))
-            {
-                string? currentUserInFile;
-                while ((currentUserInFile = reader.ReadLine()) != null)
-                {
-                    User user = JsonSerializer.Deserialize<User>(currentUserInFile);
-                    if (user != null && user.Id == id)
-                        return user;
-                }
-            }
-            return new User();
+            var user = await _userService.GetUserById(id);
+            return user != null ? Ok(user) : NotFound();
         }
 
-
-
-        // POST api/<UsersController>
         [HttpPost]
-        public ActionResult<User> Post([FromBody] User newUser)
+        public async Task<ActionResult<User>> AddUser([FromBody] User newUser)
         {
-            int numberOfUsers = System.IO.File.ReadLines(_filePath).Count();
-            newUser.Id = numberOfUsers + 1;
-            string userJson = JsonSerializer.Serialize(newUser);
-            System.IO.File.AppendAllText(_filePath, userJson + Environment.NewLine);
-            return CreatedAtAction(nameof(Get), new { newUser.Id }, newUser);
-        }
-        // POST api/<UsersController>
-        [HttpPost("{login}")]
-        public ActionResult<ExistUser> LogIn([FromBody] ExistUser existUser)
-        {
-            using (StreamReader reader = System.IO.File.OpenText(_filePath))
-            {
-                string? currentUserInFile;
-                while ((currentUserInFile = reader.ReadLine()) != null)
-                {
-                    User userFromFile = JsonSerializer.Deserialize<User>(currentUserInFile);
-                    if (userFromFile != null && userFromFile.UserName == existUser.UserName && userFromFile.Password == existUser.Password)
-                        return CreatedAtAction(nameof(Get), new { id = userFromFile.Id }, userFromFile);
-                }
-            }
-            return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            int passwordScore = _userPasswordService.CheckPassword(newUser.Password);
+            if (passwordScore < 2)
+                return BadRequest("Password is too weak.");
+
+            var user = await _userService.AddUser(newUser);
+            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
         }
 
-        // PUT api/<UsersController>/5
+        [HttpPost("login")]
+        public async Task<ActionResult<User>> LogIn([FromBody] User existUser)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _userService.LogIn(existUser);
+            if (user == null)
+                return NotFound("Invalid credentials.");
+            return Ok(user);
+        }
+
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] User updateUser)
+        public async Task<IActionResult> Put(int id, [FromBody] User updateUser)
         {
-            string textToReplace = string.Empty;
-            using (StreamReader reader = System.IO.File.OpenText(_filePath))
-            {
-                string currentUserInFile;
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-                while ((currentUserInFile = reader.ReadLine()) != null)
-                {
-                    User userFromFile = JsonSerializer.Deserialize<User>(currentUserInFile);
-                    if (userFromFile != null && userFromFile.Id == id)
-                        textToReplace = currentUserInFile;
-                }
-            }
-            if (textToReplace != string.Empty)
-            {
-                string text = System.IO.File.ReadAllText(_filePath);
-                text = text.Replace(textToReplace, JsonSerializer.Serialize(updateUser));
-                System.IO.File.WriteAllText(_filePath, text);
-            }
+            int passwordScore = _userPasswordService.CheckPassword(updateUser.Password);
+            if (passwordScore < 2)
+                return BadRequest("Password is too weak.");
+
+            await _userService.UpdateUser(id, updateUser);
+            return NoContent();
         }
-        
 
-        // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            // Implement delete logic in your service/repository
+            // await _userService.DeleteUser(id);
+            return NoContent();
         }
     }
 }

@@ -1,40 +1,22 @@
-﻿
-const titleName = document.querySelector(".titleName")
-const firstName = sessionStorage.getItem("firstName")
+﻿const titleName = document.querySelector(".titleName")
+const firstName = (JSON.parse(sessionStorage.getItem("currentUser"))).firstName
 titleName.textContent = `ברוכה הבאה ${firstName} מייד נצלול פנימה`
 
 const extrctDataFromInput = () => {
+    const id = Number(JSON.parse(sessionStorage.getItem("currentUser")).id)
     const userName = document.querySelector("#userName").value
     const firstName = document.querySelector("#firstName").value
     const lastName = document.querySelector("#lastName").value
     const password = document.querySelector("#password").value
-    return { userName, firstName, lastName, password }
-}
-
-const createObjUser = (upDateValues) => {
-    const id = Number(sessionStorage.getItem("id"))
-    const userName = upDateValues.userName
-    const firstName = upDateValues.firstName
-    const lastName = upDateValues.lastName
-    const password = upDateValues.password
     return { id, userName, firstName, lastName, password }
 }
 
-const updateStorage = (upDateValues) => {
-    sessionStorage.setItem("userName", upDateValues.userName)
-    sessionStorage.setItem("firstName", upDateValues.firstName)
-    sessionStorage.setItem("lastName", upDateValues.lastName)
-    sessionStorage.setItem("password", upDateValues.password)
-    sessionStorage.setItem("id", fullUser.id)
-
-}
 
 async function upDate() {
-    const upDateValues = extrctDataFromInput()
-    const currenrtUser = createObjUser(upDateValues)
+    const currenrtUser = extrctDataFromInput()
     try {
         const response = await fetch(
-            `https://localhost:44360/api/Users/${currenrtUser.id}`,
+            `https://localhost:44362/api/Users/${currenrtUser.id}`,
             {
                 method: `PUT`,
                 headers: { 'Content-Type': 'application/json' },
@@ -45,12 +27,41 @@ async function upDate() {
             throw new Error(`HTTP error! status ${response.status}`);
         }
         else {
-            const upDateValues = extrctDataFromInput()
-            updateStorage(upDateValues)
+            sessionStorage.setItem("currentUser", JSON.stringify(currenrtUser))
             alert("המשתמש עודכן בהצלחה")
         }
     }
+    catch (e) { alert(e) }
+}
+async function checkPassword() {
+    const bar = document.querySelector(".bar")
+    const password = document.querySelector("#password").value
+    const userPassword = { password }
+    try {
+        const response = await fetch(
+            "https://localhost:44362/api/UsersPassword", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userPassword)
+        }
+        )
+        if (!response.ok) {
+            throw new Error(`HTTP error! status ${response.status}`);
+        }
+        else {
+            const a = await response.json()
+            bar.innerHTML = ""
+            bar.style.display = "flex"
+            for (let i = 0; i < a; i++) {
+                const step = document.createElement("div")
+                step.className = "stage"
+                bar.appendChild(step)
+            }
+        }
+    }
     catch (e) {
+        bar.innerHTML = ""
         alert(e)
+        return 0
     }
 }
