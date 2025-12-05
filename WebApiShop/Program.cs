@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<IUserRipository, UserRipository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserPasswordRipository, UserPasswordRipository>();
 builder.Services.AddScoped<IUserPasswordService, UserPasswordService>();
 builder.Services.AddDbContext<Store_215962135Context>(options => options.UseSqlServer
 ("Data Source=localhost;Initial Catalog=MySiteDB; Integrated Security= True; Pooling=False"));
