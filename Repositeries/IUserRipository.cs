@@ -1,4 +1,5 @@
-﻿using Repositeries.Models;
+﻿
+using Entities;
 
 namespace Repositeries
 {
@@ -8,7 +9,7 @@ namespace Repositeries
         Task<User> GetUserById(int id);
         Task<List<User>> GetUsers();
         Task<User> LogIn(User user);
-        void UpdateUser(int id, User updateUser);
+        Task UpdateUser(int id, User updateUser);
     }
 }
 

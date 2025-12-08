@@ -16,10 +16,14 @@ const extrctDataFromInputLogIn = () => {
 }
 
 async function registIn() {
-    const newUser = extrctDataFromInputUser()
+    const userName = document.querySelector("#userName").value
+    const firstName = document.querySelector("#firstName").value
+    const lastName = document.querySelector("#lastName").value
+    const password = document.querySelector("#password").value
+    const newUser = { userName, firstName, lastName, password }
     try {
         const response = await fetch(
-            "https://localhost:44362/api/Users", {
+            "https://localhost:44360/api/Users", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newUser)
@@ -40,7 +44,7 @@ async function logIn() {
     const existUser = extrctDataFromInputLogIn()
     try {
         const response = await fetch(
-            "https://localhost:44362/api/Users/login", {
+            "https://localhost:44360/api/Users/login", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(existUser)
@@ -63,7 +67,7 @@ async function checkPassword() {
     const userPassword = { Password }
     try {
         const response = await fetch(
-            "https://localhost:44362/api/UsersPassword", {
+            "https://localhost:44360/api/UsersPassword", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userPassword)

@@ -2,9 +2,10 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repositeries.Models;
+namespace Repositeries;
 
 public partial class Store_215962135Context : DbContext
 {
@@ -13,33 +14,114 @@ public partial class Store_215962135Context : DbContext
     {
     }
 
+    public virtual DbSet<Category> Categories { get; set; }
+
+    public virtual DbSet<Order> Orders { get; set; }
+
+    public virtual DbSet<OrdersItem> OrdersItems { get; set; }
+
+    public virtual DbSet<Product> Products { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Category>(entity =>
+        {
+            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2BCA92DC65");
+
+            entity.HasIndex(e => e.CategoryName, "UQ__Categori__8517B2E034079CBF").IsUnique();
+
+            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.CategoryName)
+                .IsRequired()
+                .HasMaxLength(100)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAFAAF4A8E9");
+
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.OrderDate).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Orders__UserID__6A30C649");
+        });
+
+        modelBuilder.Entity<OrdersItem>(entity =>
+        {
+            entity.HasKey(e => e.OrderItemId).HasName("PK__Orders_I__57ED06A1646A5D68");
+
+            entity.ToTable("Orders_Items");
+
+            entity.Property(e => e.OrderItemId).HasColumnName("OrderItemID");
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.ProductsId).HasColumnName("ProductsID");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.OrdersItems)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Orders_It__Order__6E01572D");
+
+            entity.HasOne(d => d.Products).WithMany(p => p.OrdersItems)
+                .HasForeignKey(d => d.ProductsId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Orders_It__Produ__6D0D32F4");
+        });
+
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.HasKey(e => e.ProductsId).HasName("PK__Products__BB48EDC59B727978");
+
+            entity.HasIndex(e => e.ProductsName, "UQ__Products__146C2A6DD5A87F24").IsUnique();
+
+            entity.HasIndex(e => e.ImgUrl, "UQ__Products__1BCAF4FC5A568776").IsUnique();
+
+            entity.Property(e => e.ProductsId).HasColumnName("ProductsID");
+            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.ImgUrl)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.ProductsDescreption)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.ProductsName)
+                .IsRequired()
+                .HasMaxLength(100)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Products)
+                .HasForeignKey(d => d.CategoryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Products__Catego__628FA481");
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasNoKey();
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACE07EC79B");
 
-            entity.Property(e => e.Email)
-                .IsRequired()
-                .HasMaxLength(25)
-                .IsFixedLength();
+            entity.HasIndex(e => e.UserName, "UQ__Users__C9F28456767B5F20").IsUnique();
+
+            entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.FirstName)
-                .IsRequired()
-                .HasMaxLength(10)
-                .IsFixedLength();
-            entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("ID");
+                .HasMaxLength(100)
+                .IsUnicode(false);
             entity.Property(e => e.LastName)
-                .IsRequired()
-                .HasMaxLength(10)
-                .IsFixedLength();
+                .HasMaxLength(100)
+                .IsUnicode(false);
             entity.Property(e => e.Password)
                 .IsRequired()
-                .HasMaxLength(25)
-                .IsFixedLength();
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.UserName)
+                .IsRequired()
+                .HasMaxLength(100)
+                .IsUnicode(false);
         });
 
         OnModelCreatingPartial(modelBuilder);

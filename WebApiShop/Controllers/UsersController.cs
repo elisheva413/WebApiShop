@@ -6,6 +6,7 @@ using Service;
 
 
 
+
 namespace WebApiShop.Controllers
 {
     [Route("api/[controller]")]
@@ -42,13 +43,11 @@ namespace WebApiShop.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
             int passwordScore = _userPasswordService.CheckPassword(newUser.Password);
             if (passwordScore < 2)
                 return BadRequest("Password is too weak.");
-
             var user = await _userService.AddUser(newUser);
-            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+            return CreatedAtAction(nameof(GetById), new { id = user.UserId }, user);
         }
 
         [HttpPost("login")]
@@ -59,7 +58,7 @@ namespace WebApiShop.Controllers
 
             var user = await _userService.LogIn(existUser);
             if (user == null)
-                return NotFound("Invalid credentials.");
+                return Unauthorized("Invalid credentials.");
             return Ok(user);
         }
 

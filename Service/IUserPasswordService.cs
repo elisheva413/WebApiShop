@@ -1,4 +1,8 @@
-﻿namespace Service
+﻿using Entities;
+using Repositeries;
+
+namespace Service
+
 {
     public interface IUserPasswordService
     {

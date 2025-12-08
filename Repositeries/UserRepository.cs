@@ -1,6 +1,6 @@
 ﻿using Entities;
 using Microsoft.EntityFrameworkCore;
-using Repositeries.Models;
+using Repositeries;
 using System.Reflection.PortableExecutable;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -36,10 +36,10 @@ namespace Repositeries
             return await _store_215962135Context.Users.FindAsync(user);
 
         }
-        public void UpdateUser(int id, User updateUser)
+        public  async Task UpdateUser(int id, User updateUser)
         {
             _store_215962135Context.Users.Update(updateUser);
-            //_store_215962135Context.SaveChanges();
+            await _store_215962135Context.SaveChangesAsync();
         }
 
 

@@ -1,6 +1,5 @@
 ﻿using Repositeries;
-using Repositeries.Models;
-using Service;
+using Entities;
 
 namespace Service
 {
@@ -33,9 +32,9 @@ namespace Service
             return await _userRipository.LogIn(user);
         }
 
-        public void UpdateUser(int id, User updateUser)
+        public async Task UpdateUser(int id, User updateUser)
         {
-            _userRipository.UpdateUser(id, updateUser);
+            await _userRipository.UpdateUser(id, updateUser);
         }
     }
 }
