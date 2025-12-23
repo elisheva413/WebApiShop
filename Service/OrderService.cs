@@ -1,15 +1,19 @@
-﻿using Repositeries;
+﻿using AutoMapper;
+using DTOs;
 using Entities;
+using Repositeries;
 
 namespace Service
 {
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        IMapper _mapper;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IMapper mapper)
         {
             _orderRepository = orderRepository;
+            _mapper = mapper;
         }
 
         //public async Task<List<User>> GetUsers()
@@ -17,14 +21,20 @@ namespace Service
         //    return await _userRipository.GetUsers();
         //}
 
-        public async Task<Order> GetOrderById(int id)
+        public async Task<OrderDTO> GetOrderById(int id)
         {
-            return await _orderRepository.GetOrderById(id);
+            Order order = await _orderRepository.GetOrderById(id);
+            OrderDTO orderDto =_mapper.Map<Order,OrderDTO>(order);
+            return orderDto;
+
         }
 
-        public async Task<Order> AddOrder(Order order)
+        public async Task<OrderDTO> AddOrder(Order order)
         {
-            return await _orderRepository.AddOrder(order);
+            Order newOrder = await _orderRepository.AddOrder(order);
+            OrderDTO orderDto = _mapper.Map<Order, OrderDTO>(order);
+            return orderDto;
+            ;
         }
 
     }

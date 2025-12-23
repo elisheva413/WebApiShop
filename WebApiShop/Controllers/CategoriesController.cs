@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DTOs;
 using Entities;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Repositeries;
 using Service;
+using System.Collections.Generic;
 
 
 
@@ -23,15 +24,15 @@ namespace WebApiShop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
+        public async Task<ActionResult<List<CategoryDTO>>> GetCategory()
         {
-            List<Category> categories=await _categoryService.GetCategory();
-            if (categories == null || categories.Count==0)
+            List<CategoryDTO> categories = await _categoryService.GetCategory();
+            if (categories == null || categories.Count == 0)
                 return NoContent();
             return Ok(categories);
         }
-
-       
      
+
+
     }
 }

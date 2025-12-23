@@ -3,6 +3,7 @@ using Entities;
 using System.Collections.Generic;
 using Repositeries;
 using Service;
+using DTOs;
 
 
 
@@ -23,7 +24,7 @@ namespace WebApiShop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> Get(int? Product_id,string? name,float? price,int? Category_ID,string? Description)
+        public async Task<ActionResult<List<ProductDTO>>> Get(int? Product_id,string? name,float? price,int? Category_ID,string? Description)
         {
             return await _productsService.GetProducts( Product_id,name,price,Category_ID,Description);
             //if (Products == null || !Products.Any())

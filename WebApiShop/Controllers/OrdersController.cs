@@ -3,9 +3,7 @@ using Entities;
 using System.Collections.Generic;
 using Repositeries;
 using Service;
-//using User=Repositeries.User;
-
-
+using DTOs;
 
 namespace WebApiShop.Controllers
 {
@@ -23,16 +21,16 @@ namespace WebApiShop.Controllers
         [HttpGet]
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> Get(int id)
+        public async Task<ActionResult<OrderDTO>> Get(int id)
         {
-            Order order = await _orderService.GetOrderById(id);
-            return order != null ? Ok(order) : NoContent();
+            OrderDTO order = await _orderService.GetOrderById(id);
+            return order != null ? Ok(order) : NotFound();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Order>> AddOrder([FromBody] Order newOrder)
+        public async Task<ActionResult<OrderDTO>> AddOrder([FromBody] Order Order)
         {
-            Order order = await _orderService.AddOrder(newOrder);
+            OrderDTO order = await _orderService.AddOrder(Order);
             if (order == null) { return BadRequest(); }
             return CreatedAtAction(nameof(Get), new { id = order.OrderId }, order);
         }

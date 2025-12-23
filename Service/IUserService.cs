@@ -1,14 +1,15 @@
 ﻿using Repositeries;
 using Entities;
+using DTOs;
 
 namespace Service
 {
     public interface IUserService
     {
-        Task<User> AddUser(User user);
-        Task<User> GetUserById(int id);
-        Task<List<User>> GetUsers();
-        Task<User> LogIn(User user);
+        Task<List<UserDTO>> GetUsers();
+        Task<UserDTO> GetUserById(int id);
+        Task<UserDTO> AddUser(User user);
+        Task<UserDTO> LogIn(User user);
         Task UpdateUser(int id, User updateUser);
        
     }

@@ -3,6 +3,8 @@ using Entities;
 using System.Collections.Generic;
 using Repositeries;
 using Service;
+using DTOs;
+using System.Linq;
 
 
 
@@ -23,7 +25,7 @@ namespace WebApiShop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> Get()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> Get()
         {
             var users = await _userService.GetUsers();
             if (users == null || !users.Any())
@@ -32,14 +34,14 @@ namespace WebApiShop.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetById(int id)
+        public async Task<ActionResult<UserDTO>> GetById(int id)
         {
             var user = await _userService.GetUserById(id);
             return user != null ? Ok(user) : NotFound();
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> AddUser([FromBody] User newUser)
+        public async Task<ActionResult<UserDTO>> AddUser([FromBody] User newUser)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -47,16 +49,16 @@ namespace WebApiShop.Controllers
             if (passwordScore < 2)
                 return BadRequest("Password is too weak.");
             var user = await _userService.AddUser(newUser);
-            return CreatedAtAction(nameof(GetById), new { id = user.UserId }, user);
+            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<User>> LogIn([FromBody] User existUser)
+        public async Task<ActionResult<UserDTO>> LogIn([FromBody] User existingUser)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _userService.LogIn(existUser);
+            var user = await _userService.LogIn(existingUser);
             if (user == null)
                 return Unauthorized("Invalid credentials.");
             return Ok(user);
@@ -76,12 +78,6 @@ namespace WebApiShop.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            // Implement delete logic in your service/repository
-            // await _userService.DeleteUser(id);
-            return NoContent();
-        }
+    
     }
 }

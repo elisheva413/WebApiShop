@@ -26,9 +26,12 @@ builder.Services.AddDbContext<Store_215962135Context>(options => options.UseSqlS
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 
 var app = builder.Build();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
