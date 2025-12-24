@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Repositeries;
 using Service;
 using WebApiShop.Controllers;
+using NLog.Web;
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -18,8 +19,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
-builder.Services.AddDbContext<Store_215962135Context>(options => options.UseSqlServer
-("Data Source=srv2\\pupils;Initial Catalog=Store_215962135; Integrated Security= True;Trust Server Certificate=True; Pooling=False"));
+builder.Services.AddDbContext<Store_215962135Context>(options => options.UseSqlServer("MyWebApiShop"));
 
 
 
@@ -27,6 +27,7 @@ builder.Services.AddDbContext<Store_215962135Context>(options => options.UseSqlS
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Host.UseNLog();
 
 
 

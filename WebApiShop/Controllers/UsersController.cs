@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Repositeries;
 using Service;
 using DTOs;
+using NLog.Web;
 using System.Linq;
 
 
@@ -17,11 +18,13 @@ namespace WebApiShop.Controllers
     {
         private readonly IUserService _userService;
         private readonly IUserPasswordService _userPasswordService;
+        private readonly ILogger<UsersController> _logger;
 
-        public UsersController(IUserService userService, IUserPasswordService userPasswordService)
+        public UsersController(IUserService userService, IUserPasswordService userPasswordService, ILogger<UsersController> logger)
         {
             _userService = userService;
             _userPasswordService = userPasswordService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -43,8 +46,8 @@ namespace WebApiShop.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDTO>> AddUser([FromBody] User newUser)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            //if (!ModelState.IsValid)
+            //    return BadRequest(ModelState);
             int passwordScore = _userPasswordService.CheckPassword(newUser.Password);
             if (passwordScore < 2)
                 return BadRequest("Password is too weak.");
@@ -55,20 +58,21 @@ namespace WebApiShop.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDTO>> LogIn([FromBody] User existingUser)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            //if (!ModelState.IsValid)
+            //    return BadRequest(ModelState);
 
             var user = await _userService.LogIn(existingUser);
             if (user == null)
                 return Unauthorized("Invalid credentials.");
+            _logger.LogInformation($"Login attempted with User Name,{existingUser.UserName} and password{existingUser.Password}");
             return Ok(user);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] User updateUser)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            //if (!ModelState.IsValid)
+            //    return BadRequest(ModelState);
 
             int passwordScore = _userPasswordService.CheckPassword(updateUser.Password);
             if (passwordScore < 2)
