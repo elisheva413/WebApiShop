@@ -15,11 +15,23 @@ namespace Repositeries
         {
             _store_215962135Context = store_215962135Context;
         }
+      
 
-
-        public async Task<List<Product>> GetProducts(int? Product_id, string? name, float? price, int? Category_ID, string? Description)
+        public async Task<(List<Product> Items,int TotalCount)> GetProducts(string? description,double? minPrice,double? maxPrice,short[]? categoriesId,int position = 1,int skip = 8)
         {
-            return await _store_215962135Context.Products.ToListAsync();
+            var query = _store_215962135Context.Products.Where(product => (description == null ? (true) : (product.ProductsDescreption.Contains(description)))
+            && ((minPrice == null) ? (true) : (product.Price >= minPrice))
+            && ((maxPrice == null) ? (true) : (product.Price <= maxPrice))
+            && ((categoriesId.Length == 0) ? (true) : (categoriesId.Contains(product.CategoryId))))
+            .OrderBy(product => product.Price);
+            Console.WriteLine(query.ToQueryString());
+
+            List<Product> products = await query.Skip((position - 1) * skip).Take(skip).Include(Product => Product.Category).ToListAsync();
+            int totalCount = await query.CountAsync();
+            
+
+
+            return  (products, totalCount);
         }
     }
 }

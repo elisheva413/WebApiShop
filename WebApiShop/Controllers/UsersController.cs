@@ -44,10 +44,8 @@ namespace WebApiShop.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> AddUser([FromBody] User newUser)
+        public async Task<ActionResult<UserDTO>> AddUser([FromBody] UserRegisterDTO newUser)
         {
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
             int passwordScore = _userPasswordService.CheckPassword(newUser.Password);
             if (passwordScore < 2)
                 return BadRequest("Password is too weak.");
@@ -56,11 +54,8 @@ namespace WebApiShop.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDTO>> LogIn([FromBody] User existingUser)
+        public async Task<ActionResult<UserDTO>> LogIn([FromBody] UserLoginDTO existingUser)
         {
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
-
             var user = await _userService.LogIn(existingUser);
             if (user == null)
                 return Unauthorized("Invalid credentials.");
@@ -69,11 +64,8 @@ namespace WebApiShop.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] User updateUser)
+        public async Task<IActionResult> Put(int id, [FromBody] UserDTO updateUser)
         {
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
-
             int passwordScore = _userPasswordService.CheckPassword(updateUser.Password);
             if (passwordScore < 2)
                 return BadRequest("Password is too weak.");

@@ -9,14 +9,18 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class AutoMapper :Profile
+    public class AutoMappering : Profile
     {
-        public AutoMapper()
+        public AutoMappering()
         {
-            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<User, UserDTO>();
+            CreateMap<UserDTO, User>();
+            CreateMap<UserLoginDTO, User>();
+            CreateMap<UserRegisterDTO, User>();
             CreateMap<Product, ProductDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>().ReverseMap();
             CreateMap<Order, OrderDTO>().ReverseMap();
+           
         }
 
     }

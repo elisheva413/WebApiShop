@@ -17,11 +17,19 @@ namespace Service
             _mapper = mapper;
         }
 
-        public async Task<List<ProductDTO>> GetProducts(int? Product_id, string? name, float? price, int? Category_ID, string? Description)
+        public async Task<FinalProducts> GetProducts(string? description, double? minPrice, double? maxPrice, short[]? categoriesId, int position = 1, int skip = 8)
         {
-            List<Product> ProductList = await _productRepository.GetProducts(Product_id, name, price, Category_ID, Description);
-            List<ProductDTO> ProductDTOList = _mapper.Map<List<Product>, List<ProductDTO>>(ProductList);
-            return ProductDTOList;
+            (List<Product> Items, int TotalCount) products = await _productRepository.GetProducts(description, minPrice, maxPrice, categoriesId, position, skip);
+            List<ProductDTO> productsDTO = _mapper.Map<List<Product>, List<ProductDTO>>(products.Items);
+            bool hasNext = (products.TotalCount - (position * skip)) > 0;
+            bool hasPrev = position > 1;
+            FinalProducts finalProducts = new()
+            {
+                Items = productsDTO,
+                TotalCount = products.TotalCount,
+                HasNext = hasNext,
+                HasPrev = hasPrev
+            };
 
         }
 

@@ -8,9 +8,9 @@ namespace Service
     {
         Task<List<UserDTO>> GetUsers();
         Task<UserDTO> GetUserById(int id);
-        Task<UserDTO> AddUser(User user);
-        Task<UserDTO> LogIn(User user);
-        Task UpdateUser(int id, User updateUser);
+        Task<UserDTO> AddUser(UserRegisterDTO user);
+        Task<UserDTO> LogIn(UserLoginDTO user);
+        Task UpdateUser(int id, UserDTO updateUser);
        
     }
 }
