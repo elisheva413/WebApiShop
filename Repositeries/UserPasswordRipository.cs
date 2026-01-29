@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Repositeries
+namespace Repositories
 {
-    public class UserPasswordRipository : IUserPasswordRipository
+    public class UserPasswordRepository : IUserPasswordRepository
     {
         public int CheckPassword(UserPassword password)
         {

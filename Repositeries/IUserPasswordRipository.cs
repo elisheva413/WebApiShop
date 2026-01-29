@@ -1,8 +1,8 @@
 ﻿using Entities;
 
-namespace Repositeries
+namespace Repositories
 {
-    public interface IUserPasswordRipository
+    public interface IUserPasswordRepository
     {
         int CheckPassword(UserPassword password);
     }

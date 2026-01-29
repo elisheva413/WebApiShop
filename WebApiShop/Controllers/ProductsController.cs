@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Entities;
 using System.Collections.Generic;
-using Repositeries;
+using Repositories;
 using Service;
 using DTOs;
 
