@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities;
-using Repositeries;
+using Repositories;
 using Zxcvbn;
 
 namespace Service
 {
     public class UserPasswordService : IUserPasswordService
     {
-        private readonly IUserPasswordRipository _userPasswordRipo;
+        private readonly IUserPasswordRepository _userPasswordRepository;
 
-        public UserPasswordService(IUserPasswordRipository userPassword)
+        public UserPasswordService(IUserPasswordRepository userPassword)
         {
-            _userPasswordRipo = userPassword;
+            _userPasswordRepository = userPassword;
         }
 
         public int CheckPassword(string password)

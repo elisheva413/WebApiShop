@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Repositeries;
+using Repositories;
 using Service;
 using WebApiShop.Controllers;
 using NLog.Web;
@@ -8,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
-builder.Services.AddScoped<IUserRipository, UserRipository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserPasswordRipository, UserPasswordRipository>();
+builder.Services.AddScoped<IUserPasswordRepository, UserPasswordRepository>();
 builder.Services.AddScoped<IUserPasswordService, UserPasswordService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();

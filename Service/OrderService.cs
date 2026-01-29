@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DTOs;
 using Entities;
-using Repositeries;
+using Repositories;
 
 namespace Service
 {
@@ -16,10 +16,7 @@ namespace Service
             _mapper = mapper;
         }
 
-        //public async Task<List<User>> GetUsers()
-        //{
-        //    return await _userRipository.GetUsers();
-        //}
+        
 
         public async Task<OrderDTO> GetOrderById(int id)
         {

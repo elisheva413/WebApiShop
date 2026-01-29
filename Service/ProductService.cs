@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Entities;
-using Repositeries;
+using Repositories;
 using DTOs;
 
 
@@ -30,7 +30,7 @@ namespace Service
                 HasNext = hasNext,
                 HasPrev = hasPrev
             };
-
+            return finalProducts;
         }
 
 

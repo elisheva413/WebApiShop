@@ -1,17 +1,17 @@
 ﻿using Entities;
 using Microsoft.EntityFrameworkCore;
-using Repositeries;
+using Repositories;
 using System.Reflection.PortableExecutable;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 
-namespace Repositeries
+namespace Repositories
 {
-    public class UserRipository :  IUserRipository
+    public class UserRepository :  IUserRepository
     {
         Store_215962135Context _store_215962135Context;
-        public UserRipository(Store_215962135Context store_215962135Context)
+        public UserRepository(Store_215962135Context store_215962135Context)
         {
             _store_215962135Context = store_215962135Context;
         }

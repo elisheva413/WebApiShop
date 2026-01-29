@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 
-namespace Repositeries
+namespace Repositories
 {
     public class OrderRepository : IOrderRepository
     {
