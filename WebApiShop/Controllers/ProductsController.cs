@@ -5,9 +5,6 @@ using Repositeries;
 using Service;
 using DTOs;
 
-
-
-
 namespace WebApiShop.Controllers
 {
     [Route("api/[controller]")]
@@ -15,12 +12,10 @@ namespace WebApiShop.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productsService;
-       
 
         public ProductsController(IProductService productsService)
         {
             _productsService = productsService;
-           
         }
 
         [HttpGet]

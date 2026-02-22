@@ -3,13 +3,12 @@ using Entities;
 using Repositeries;
 using DTOs;
 
-
 namespace Service
 {
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
-        IMapper _mapper;
+        private readonly IMapper _mapper;
 
         public ProductService(IProductRepository productRepository, IMapper mapper)
         {
@@ -30,10 +29,7 @@ namespace Service
                 HasNext = hasNext,
                 HasPrev = hasPrev
             };
-
+            return finalProducts;
         }
-
-
-
     }
 }

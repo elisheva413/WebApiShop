@@ -5,9 +5,6 @@ using Repositeries;
 using Service;
 using System.Collections.Generic;
 
-
-
-
 namespace WebApiShop.Controllers
 {
     [Route("api/[controller]")]
@@ -15,12 +12,10 @@ namespace WebApiShop.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-       
 
         public CategoriesController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
-           
         }
 
         [HttpGet]
@@ -31,8 +26,5 @@ namespace WebApiShop.Controllers
                 return NoContent();
             return Ok(categories);
         }
-     
-
-
     }
 }

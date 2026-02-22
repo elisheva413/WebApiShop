@@ -18,8 +18,6 @@ namespace WebApiShop.Controllers
             _orderService = orderService;
         }
 
-        [HttpGet]
-
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderDTO>> Get(int id)
         {
@@ -28,11 +26,12 @@ namespace WebApiShop.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<OrderDTO>> AddOrder([FromBody] Order Order)
+        public async Task<ActionResult<OrderDTO>> AddOrder([FromBody] Order order)
         {
-            OrderDTO order = await _orderService.AddOrder(Order);
-            if (order == null) { return BadRequest(); }
-            return CreatedAtAction(nameof(Get), new { id = order.OrderId }, order);
+            OrderDTO orderDto = await _orderService.AddOrder(order);
+            if (orderDto == null)
+                return BadRequest();
+            return CreatedAtAction(nameof(Get), new { id = orderDto.OrderId }, orderDto);
         }
 
     }
