@@ -4,11 +4,6 @@ using System.Collections.Generic;
 using Repositeries;
 using Service;
 using DTOs;
-using NLog.Web;
-using System.Linq;
-
-
-
 
 namespace WebApiShop.Controllers
 {
@@ -59,7 +54,7 @@ namespace WebApiShop.Controllers
             var user = await _userService.LogIn(existingUser);
             if (user == null)
                 return Unauthorized("Invalid credentials.");
-            _logger.LogInformation($"Login attempted with User Name,{existingUser.UserName} and password{existingUser.Password}");
+            _logger.LogInformation($"Login attempted with User Name: {existingUser.UserName} and password: {existingUser.Password}");
             return Ok(user);
         }
 
@@ -73,7 +68,5 @@ namespace WebApiShop.Controllers
             await _userService.UpdateUser(id, updateUser);
             return NoContent();
         }
-
-    
     }
 }

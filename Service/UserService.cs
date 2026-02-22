@@ -3,14 +3,13 @@ using DTOs;
 using Entities;
 using Repositeries;
 using System.Collections.Generic;
-using System.Runtime.Intrinsics.X86;
 
 namespace Service
 {
     public class UserService : IUserService
     {
         private readonly IUserRipository _userRipository;
-        IMapper _mapper;
+        private readonly IMapper _mapper;
 
         public UserService(IUserRipository userRipository, IMapper mapper)
         {
@@ -21,14 +20,14 @@ namespace Service
         public async Task<List<UserDTO>> GetUsers()
         {
             List<User> users = await _userRipository.GetUsers();
-            List<UserDTO>usersDTO =_mapper.Map<List<User>, List < UserDTO >> (users);
+            List<UserDTO> usersDTO = _mapper.Map<List<User>, List<UserDTO>>(users);
             return usersDTO;
         }
 
         public async Task<UserDTO> GetUserById(int id)
         {
             User userByID = await _userRipository.GetUserById(id);
-            UserDTO userDtoByID= _mapper.Map< User, UserDTO>(userByID);
+            UserDTO userDtoByID = _mapper.Map<User, UserDTO>(userByID);
             return userDtoByID;
         }
 
@@ -43,15 +42,14 @@ namespace Service
         public async Task<UserDTO> LogIn(UserLoginDTO existingUser)
         {
             User loginUser = _mapper.Map<UserLoginDTO, User>(existingUser);
-            User user= await _userRipository.LogIn(loginUser);
-            UserDTO userDto= _mapper.Map<User, UserDTO>(user);
+            User user = await _userRipository.LogIn(loginUser);
+            UserDTO userDto = _mapper.Map<User, UserDTO>(user);
             return userDto;
-
         }
 
         public async Task UpdateUser(int id, UserDTO updateUser)
         {
-            User user=_mapper.Map <UserDTO, User>(updateUser);
+            User user = _mapper.Map<UserDTO, User>(updateUser);
             await _userRipository.UpdateUser(id, user);
         }
     }

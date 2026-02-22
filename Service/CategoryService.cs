@@ -3,13 +3,12 @@ using DTOs;
 using Entities;
 using Repositeries;
 
-
 namespace Service
 {
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
-        IMapper _mapper;
+        private readonly IMapper _mapper;
 
         public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
@@ -19,12 +18,9 @@ namespace Service
 
         public async Task<List<CategoryDTO>> GetCategory()
         {
-            List<Category> cayegoryList = await _categoryRepository.GetCategory();
-            List<CategoryDTO> categoryDtos = _mapper.Map<List<Category>, List<CategoryDTO>>(cayegoryList);
+            List<Category> categoryList = await _categoryRepository.GetCategory();
+            List<CategoryDTO> categoryDtos = _mapper.Map<List<Category>, List<CategoryDTO>>(categoryList);
             return categoryDtos;
         }
-
-
-   
     }
 }
